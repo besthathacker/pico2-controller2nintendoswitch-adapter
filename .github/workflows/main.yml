@@ -1,7 +1,7 @@
 name: Build GP2040-CE Pico2
 
 on:
-  workflow_dispatch: # manual trigger
+  workflow_dispatch:
   push:
     branches: [ main ]
   pull_request:
@@ -22,7 +22,7 @@ jobs:
           cd GP2040-CE
           mkdir -p build
           cd build
-          cmake .. -DPICO_BOARD=pico2
+          cmake .. -DPICO_BOARD=pico2 -DPICO_SDK_FETCH_FROM_GIT=1
           make -j$(nproc)
 
       - name: Upload UF2 artifact
