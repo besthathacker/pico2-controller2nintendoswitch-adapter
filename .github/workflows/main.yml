@@ -19,7 +19,7 @@ jobs:
           cd GP2040-CE
           mkdir -p build
           cd build
-          cmake .. -DPICO_BOARD=pico2 -DPICO_SDK_FETCH_FROM_GIT=1 -DENABLE_PS4=OFF -DENABLE_PS5=OFF -DENABLE_XBOX=OFF
+          cmake .. -DPICO_BOARD=pico2 -DPICO_SDK_FETCH_FROM_GIT=1 -DFEATURE_PS4=0 -DFEATURE_PS5=0 -DFEATURE_XINPUT=0
           make -j$(nproc)
 
       - name: Upload UF2 artifact
