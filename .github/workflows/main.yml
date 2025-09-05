@@ -1,7 +1,7 @@
 name: Build GP2040-CE Pico2
 
 on:
-  workflow_dispatch: # run manually from the Actions tab
+  workflow_dispatch:
   push:
     branches: [ main ]
   pull_request:
@@ -11,9 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
+      - name: Checkout GP2040-CE source
         uses: actions/checkout@v4
         with:
+          repository: OpenStickCommunity/GP2040-CE
           submodules: recursive
 
       - name: Install toolchain
@@ -21,19 +22,16 @@ jobs:
           sudo apt update
           sudo apt install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential
 
-      - name: Configure (Pico2)
+      - name: Configure & Build (Pico2)
         run: |
+          cd GP2040-CE
           mkdir -p build
           cd build
           cmake .. -DPICO_BOARD=pico2
-
-      - name: Build
-        run: |
-          cd build
           make -j$(nproc)
 
       - name: Upload UF2 artifact
         uses: actions/upload-artifact@v4
         with:
           name: gp2040ce_pico2
-          path: build/src/gp2040ce_pico2.uf2
+          path: GP2040-CE/build/src/gp2040ce_pico2.uf2
