@@ -1,7 +1,7 @@
 name: Build GP2040-CE Pico2
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # manual trigger
   push:
     branches: [ main ]
   pull_request:
@@ -11,19 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout GP2040-CE source
-        uses: actions/checkout@v4
-        with:
-          repository: OpenStickCommunity/GP2040-CE
-          submodules: recursive
-
       - name: Install toolchain
         run: |
           sudo apt update
-          sudo apt install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential
+          sudo apt install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential git
 
-      - name: Configure & Build (Pico2)
+      - name: Clone GP2040-CE source
         run: |
+          git clone --recursive https://github.com/OpenStickCommunity/GP2040-CE.git
           cd GP2040-CE
           mkdir -p build
           cd build
