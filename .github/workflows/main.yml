@@ -1,29 +1,51 @@
-name: Build GP2040-CE Pico2
+name: Build GP2040-CE for Pico2
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install toolchain
-        run: |
-          sudo apt update
-          sudo apt install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential git
+      # 1) Pull the GP2040-CE source + submodules (tinyusb, pico_pio_usb)
+      - name: Checkout GP2040-CE
+        uses: actions/checkout@v4
+        with:
+          repository: OpenStickCommunity/GP2040-CE
+          submodules: true
 
-      - name: Clone GP2040-CE source and Build
+      # 2) Toolchain
+      - name: Install ARM toolchain
         run: |
-          git clone --recursive https://github.com/OpenStickCommunity/GP2040-CE.git
-          cd GP2040-CE
-          mkdir -p build
-          cd build
-          cmake .. -DPICO_BOARD=pico2 -DPICO_SDK_FETCH_FROM_GIT=1 -DFEATURE_PS4=0 -DFEATURE_PS5=0 -DFEATURE_XINPUT=0
-          make -j$(nproc)
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake gcc-arm-none-eabi libnewlib-arm-none-eabi
 
+      # 3) Configure (fetch a known-good Pico SDK, target Pico2, and
+      #    allow MbedTLS private access to satisfy PS4 sources)
+      - name: Configure (Pico2)
+        run: |
+          cmake -S . -B build \
+            -DPICO_BOARD=pico2 \
+            -DPICO_SDK_FETCH_FROM_GIT=1 \
+            -DPICO_SDK_GIT_TAG=2.1.0 \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_FLAGS="-DMBEDTLS_ALLOW_PRIVATE_ACCESS=1" \
+            -DCMAKE_CXX_FLAGS="-DMBEDTLS_ALLOW_PRIVATE_ACCESS=1"
+
+      # 4) Build
+      - name: Build
+        run: cmake --build build -j"$(nproc)"
+
+      # 5) Show what got produced (helps debugging)
+      - name: List UF2s
+        run: find build -name '*.uf2' -maxdepth 3 -print
+
+      # 6) Upload every UF2 it generated
       - name: Upload UF2 artifact
         uses: actions/upload-artifact@v4
         with:
-          name: gp2040ce_pico2
-          path: GP2040-CE/build/src/gp2040ce_pico2.uf2
+          name: gp2040ce-pico2
+          path: build/**/*.uf2
