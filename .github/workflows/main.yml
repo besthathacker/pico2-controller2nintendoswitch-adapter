@@ -15,13 +15,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y build-essential cmake gcc-arm-none-eabi libnewlib-arm-none-eabi
-
-      - name: Set up Pico SDK
-        run: |
-          git clone --depth=1 https://github.com/raspberrypi/pico-sdk.git
-          git -C pico-sdk submodule update --init
-          echo "PICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk" >> $GITHUB_ENV
-      
+          
       - name: Set up Pico SDK
         run: |
           git clone --depth=1 https://github.com/raspberrypi/pico-sdk.git
