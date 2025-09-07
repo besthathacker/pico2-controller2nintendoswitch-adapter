@@ -1,35 +1,40 @@
-name: Build GP2040-CE Pico2
+name: Build Switch Bridge Pico
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # manual run
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
       - name: Install toolchain
         run: |
           sudo apt update
-          sudo apt install -y build-essential cmake gcc-arm-none-eabi libnewlib-arm-none-eabi git
+          sudo apt install -y build-essential cmake gcc-arm-none-eabi libnewlib-arm-none-eabi
 
-      - name: Clone GP2040-CE source
+      - name: Set up Pico SDK
         run: |
-          git clone --recursive https://github.com/OpenStickCommunity/GP2040-CE.git
-          cd GP2040-CE
+          git clone --depth=1 https://github.com/raspberrypi/pico-sdk.git
+          git -C pico-sdk submodule update --init
+          echo "PICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk" >> $GITHUB_ENV
+
+      - name: Configure
+        run: |
           mkdir -p build
           cd build
-          cmake .. \
-            -DPICO_BOARD=pico2 \
-            -DPICO_SDK_FETCH_FROM_GIT=1 \
-            -DPICO_SDK_GIT_TAG=develop \
-            -DFEATURE_PS4=0 -DFEATURE_PS5=0 -DFEATURE_XINPUT=0 \
-            -DCMAKE_C_FLAGS="-DMBEDTLS_ALLOW_PRIVATE_ACCESS=1" \
-            -DCMAKE_CXX_FLAGS="-DMBEDTLS_ALLOW_PRIVATE_ACCESS=1"
+          cmake .. -DPICO_BOARD=pico -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: |
+          cd build
           make -j$(nproc)
 
       - name: Upload UF2 artifact
         uses: actions/upload-artifact@v4
         with:
-          name: gp2040ce-pico2
-          path: GP2040-CE/build/src/*.uf2
+          name: switch_bridge_pico
+          path: build/*.uf2
