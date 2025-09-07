@@ -13,24 +13,45 @@ void send_switch_report(void) {
     }
 }
 
+// HID report descriptor (for a simple gamepad)
 uint8_t const desc_hid_report[] = {
-    TUD_HID_REPORT_DESC_GAMEPAD( HID_REPORT_ID(1) )
+    TUD_HID_REPORT_DESC_GAMEPAD(HID_REPORT_ID(1))
 };
 
-uint16_t tud_hid_get_report_cb(uint8_t report_id,
+// -----------------------------
+// TinyUSB HID Device callbacks
+// -----------------------------
+
+// Called when host requests data from device
+uint16_t tud_hid_get_report_cb(uint8_t instance,
+                               uint8_t report_id,
                                hid_report_type_t report_type,
-                               uint8_t* buffer, uint16_t reqlen) {
+                               uint8_t* buffer,
+                               uint16_t reqlen) {
+    (void) instance;
+    (void) report_id;
+    (void) report_type;
+    (void) buffer;
+    (void) reqlen;
     return 0;
 }
 
-void tud_hid_set_report_cb(uint8_t report_id,
+// Called when host sends data to device
+void tud_hid_set_report_cb(uint8_t instance,
+                           uint8_t report_id,
                            hid_report_type_t report_type,
-                           uint8_t const* buffer, uint16_t bufsize) {
+                           uint8_t const* buffer,
+                           uint16_t bufsize) {
+    (void) instance;
     (void) report_id;
     (void) report_type;
     (void) buffer;
     (void) bufsize;
 }
+
+// -----------------------------
+// TinyUSB HID Host callbacks
+// -----------------------------
 
 void tuh_hid_mount_cb(uint8_t dev_addr, uint8_t instance,
                       uint8_t const* desc_report, uint16_t desc_len) {
@@ -53,12 +74,18 @@ void tuh_hid_report_received_cb(uint8_t dev_addr, uint8_t instance,
     tuh_hid_receive_report(dev_addr, instance);
 }
 
+// -----------------------------
+// Main loop
+// -----------------------------
+
 int main(void) {
     stdio_init_all();
     tusb_init();
+
     while (1) {
         tud_task(); // TinyUSB device task
         tuh_task(); // TinyUSB host task
     }
+
     return 0;
 }
