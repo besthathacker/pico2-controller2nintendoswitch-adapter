@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.13)
-include(pico_sdk_import.cmake)
-
 project(switch_bridge_pico)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
+
+include(${PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 pico_sdk_init()
 
 add_executable(switch_bridge_pico
