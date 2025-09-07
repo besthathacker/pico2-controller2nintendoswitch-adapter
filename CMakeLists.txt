@@ -10,6 +10,15 @@ add_executable(switch_bridge_pico
 )
 
 target_include_directories(switch_bridge_pico PRIVATE ${CMAKE_CURRENT_LIST_DIR})
-target_link_libraries(switch_bridge_pico pico_stdlib tinyusb_device tinyusb_host tinyusb_board)
+target_link_libraries(switch_bridge_pico
+    pico_stdlib
+    pico_unique_id
+    tinyusb_device
+    tinyusb_host
+    tinyusb_board
+    hardware_gpio
+    hardware_irq
+)
+
 
 pico_add_extra_outputs(switch_bridge_pico)
