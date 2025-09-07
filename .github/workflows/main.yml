@@ -23,17 +23,18 @@ jobs:
           echo "PICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk" >> $GITHUB_ENV
           export PICO_SDK_PATH=$PWD/pico-sdk
 
-      - name: Configure
+      - name: Configure CMake
         run: |
-          mkdir -p build
+          mkdir build
           cd build
-          cmake .. -DPICO_BOARD=pico -DCMAKE_BUILD_TYPE=Release
+          cmake .. \
+            -DPICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk \
+            -DCMAKE_BUILD_TYPE=Release \
+            -G Ninja
 
       - name: Build
-        run: |
-          cd build
-          make -j$(nproc)
-
+        run: cmake --build build
+        
       - name: Upload UF2 artifact
         uses: actions/upload-artifact@v4
         with:
