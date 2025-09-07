@@ -1,4 +1,4 @@
-#include "bsp/board.h"
+#include "pico/stdlib.h"
 #include "tusb.h"
 #include "host/usbh.h"
 #include "host/hid_host.h"
@@ -43,7 +43,7 @@ void tuh_hid_report_received_cb(uint8_t dev_addr, uint8_t instance,
 }
 
 int main(void) {
-    board_init();
+    stdio_init_all();
     tusb_init();
     while (1) {
         tud_task();
