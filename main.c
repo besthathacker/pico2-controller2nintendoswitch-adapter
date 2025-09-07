@@ -1,3 +1,5 @@
+#include "class/hid/hid.h"
+#include "class/hid/hid_device.h"
 #include "bsp/board.h"
 #include "tusb.h"
 #include <string.h>
