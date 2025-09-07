@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.13)
 
 include(pico_sdk_import.cmake)
 
-project(pico_usb_uart C CXX ASM)
+project(switch_bridge_pico C CXX ASM)
 pico_sdk_init()
 
-add_executable(pico_usb_uart
+add_executable(switch_bridge_pico
     main.c
 )
 
