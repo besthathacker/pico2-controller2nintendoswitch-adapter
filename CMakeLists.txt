@@ -10,6 +10,7 @@ add_executable(switch_bridge_pico
 )
 
 target_include_directories(switch_bridge_pico PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}        # <-- adds your project root (where tusb_config.h is)
     ${PICO_SDK_PATH}/lib/tinyusb/src
 )
 
