@@ -19,8 +19,8 @@ target_link_libraries(switch_bridge_pico
     pico_unique_id
     hardware_gpio
     hardware_irq
-    pico_tinyusb_device
-    pico_tinyusb_host
+    tinyusb_device
+    tinyusb_host
 )
 
 pico_add_extra_outputs(switch_bridge_pico)
