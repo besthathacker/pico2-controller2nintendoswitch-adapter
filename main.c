@@ -1,7 +1,9 @@
 #include "pico/stdlib.h"
+#include "pico/unique_id.h"
+
 #include "tusb.h"
-#include "host/usbh.h"
-#include "host/hid_host.h"
+#include "class/hid/hid_host.h"
+#include "class/hid/hid_device.h"
 
 uint8_t switch_report[8];
 
@@ -24,14 +26,23 @@ uint16_t tud_hid_get_report_cb(uint8_t report_id,
 void tud_hid_set_report_cb(uint8_t report_id,
                            hid_report_type_t report_type,
                            uint8_t const* buffer, uint16_t bufsize) {
+    (void) report_id;
+    (void) report_type;
+    (void) buffer;
+    (void) bufsize;
 }
 
 void tuh_hid_mount_cb(uint8_t dev_addr, uint8_t instance,
                       uint8_t const* desc_report, uint16_t desc_len) {
+    (void) desc_report;
+    (void) desc_len;
     tuh_hid_receive_report(dev_addr, instance);
 }
 
-void tuh_hid_umount_cb(uint8_t dev_addr, uint8_t instance) {}
+void tuh_hid_umount_cb(uint8_t dev_addr, uint8_t instance) {
+    (void) dev_addr;
+    (void) instance;
+}
 
 void tuh_hid_report_received_cb(uint8_t dev_addr, uint8_t instance,
                                 uint8_t const* report, uint16_t len) {
@@ -46,8 +57,8 @@ int main(void) {
     stdio_init_all();
     tusb_init();
     while (1) {
-        tud_task();
-        tuh_task();
+        tud_task(); // TinyUSB device task
+        tuh_task(); // TinyUSB host task
     }
     return 0;
 }

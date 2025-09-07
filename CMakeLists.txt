@@ -9,6 +9,10 @@ add_executable(switch_bridge_pico
     main.c
 )
 
+target_include_directories(switch_bridge_pico PRIVATE
+    ${PICO_SDK_PATH}/lib/tinyusb/src
+)
+
 target_link_libraries(switch_bridge_pico
     pico_stdlib
     pico_unique_id
